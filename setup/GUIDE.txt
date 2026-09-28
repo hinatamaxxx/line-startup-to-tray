@@ -1,4 +1,4 @@
-﻿LINE Tray Startup — 使い方
+﻿Windows版LINEを通知領域で起動 — 使い方
 
 ■ セットアップ
 1. LINE本体で自動ログインをONにします。
@@ -9,7 +9,7 @@
    アイコンをダブルクリックして開けることも確認してください。
 
 次回Windowsにサインインしたときから自動起動します。
-設定画面はスタートメニューの「LINE Tray Startup」から開けます。
+設定画面はスタートメニューの「Windows版LINEを通知領域で起動」から開けます。
 
 ■ 仕組み
 LINEがウィンドウを表示しようとするタイミングで表示要求を抑え、
@@ -32,6 +32,6 @@ LINEの更新で動かなくなる場合があります。
 Windows側のスタートアップでは、LineTrayStartupをON、通常のLINEをOFFにします。
 
 詳しい説明・配布元
-https://github.com/hinatamaxxx/line-startup-to-tray
+https://github.com/hinatamaxxx/windows-line-start-to-tray
 
 本ツールはLINE公式が提供・サポートするものではありません。

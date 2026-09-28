@@ -12,8 +12,8 @@
 ## 配布EXEをビルドする
 
 ```powershell
-git clone --recurse-submodules https://github.com/hinatamaxxx/line-startup-to-tray.git
-cd line-startup-to-tray
+git clone --recurse-submodules https://github.com/hinatamaxxx/windows-line-start-to-tray.git
+cd windows-line-start-to-tray
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Build-Release.ps1
 ```
 
@@ -53,7 +53,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tests\Observe-LineStar
 
 ## 公開するファイル
 
-- `LineTrayStartup-Setup-<version>.exe`
+- `WindowsLineStartToTray-Setup-<version>.exe`
 - `SHA256SUMS.txt`
 
 ビルド出力、診断ログ、`startup-backup.json`、LINE本体はGitへ追加しません。新しい版では、コードのバージョン、ビルドスクリプト、READMEのダウンロードリンク、リリースノートを同じ版へ更新してください。

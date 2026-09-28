@@ -1,6 +1,6 @@
 ﻿param([switch]$SkipNativeBuild)
 $ErrorActionPreference = 'Stop'
-$version = '0.2.0-preview.2'
+$version = '0.2.0-preview.3'
 Push-Location $PSScriptRoot
 try {
     if (!$SkipNativeBuild) {
@@ -8,7 +8,7 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Native build failed.' }
     }
     New-Item -ItemType Directory -Path release -Force | Out-Null
-    $output = Join-Path $PSScriptRoot "release\LineTrayStartup-Setup-$version.exe"
+    $output = Join-Path $PSScriptRoot "release\WindowsLineStartToTray-Setup-$version.exe"
     $compiler = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
     $wpf = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\WPF'
     $arguments = @('/nologo', '/target:winexe', '/platform:x64', '/optimize+', '/utf8output', '/win32manifest:setup\app.manifest', '/win32icon:setup\app.ico', '/resource:setup\app.ico,AppIcon.ico', "/out:$output",

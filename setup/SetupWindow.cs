@@ -22,7 +22,7 @@ internal sealed class SetupWindow : Window
 
     internal SetupWindow()
     {
-        Title = "LINE Tray Startup";
+        Title = "Windows版LINEを通知領域で起動";
         Width = Math.Min(744, SystemParameters.WorkArea.Width - 24);
         Height = Math.Min(748, SystemParameters.WorkArea.Height - 24);
         MinWidth = Math.Min(680, Width); MinHeight = Math.Min(630, Height);
@@ -44,10 +44,10 @@ internal sealed class SetupWindow : Window
         Part<Button>("MinimizeButton").Click += delegate { WindowState = WindowState.Minimized; };
         Part<Button>("ThemeButton").Click += delegate { SetTheme(!dark); };
         Part<Button>("FolderButton").Click += delegate { Open(Program.Home); };
-        Part<Button>("GithubButton").Click += delegate { Open("https://github.com/hinatamaxxx/line-startup-to-tray"); };
+        Part<Button>("GithubButton").Click += delegate { Open("https://github.com/hinatamaxxx/windows-line-start-to-tray"); };
         Part<Button>("HelpButton").Click += delegate {
             string guide = Path.Combine(Program.Home, "使い方.txt");
-            Open(File.Exists(guide) ? guide : "https://github.com/hinatamaxxx/line-startup-to-tray#readme");
+            Open(File.Exists(guide) ? guide : "https://github.com/hinatamaxxx/windows-line-start-to-tray#readme");
         };
         Closing += delegate(object sender, System.ComponentModel.CancelEventArgs e) { if (busy) e.Cancel = true; };
         SourceInitialized += delegate {
@@ -135,7 +135,11 @@ internal sealed class SetupWindow : Window
                 Program.Extract(temp);
                 Program.RunScript(temp, undo ? "Uninstall.ps1" : "Install.ps1");
                 if (!undo) Program.SaveSupportFiles(temp, Program.Home, executable, Program.Shortcut);
-                else if (File.Exists(Program.Shortcut)) File.Delete(Program.Shortcut);
+                else
+                {
+                    if (File.Exists(Program.Shortcut)) File.Delete(Program.Shortcut);
+                    Program.RemoveLegacyShortcut(Program.Home, Program.Shortcut);
+                }
             });
             if (undo) SetState("設定を元に戻しました", "LINEを通常終了して起動し直すと、通常の動作に戻ります。ファイルの削除方法は「使い方」をご覧ください。");
             else SetState("セットアップが完了しました", "次回サインインから自動起動します。「LINEを起動」で、今すぐ動作を確認できます。");

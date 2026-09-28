@@ -1,9 +1,10 @@
-## セットアップ画面をリニューアル
+## 用途が伝わるアプリ名に変更
 
-- WPFを採用し、余白と操作の優先順位を整理した画面へ変更しました。
-- Windowsのテーマに合わせたライト／ダーク表示に対応しました。右上のボタンでも切り替えられます。
-- セットアップ状態・処理中・操作結果を画面内に表示します。
-- 本ツール独自のアプリアイコンを追加しました。
+- アプリ名を「Windows版LINEを通知領域で起動」に変更しました。
+- リポジトリ名を `windows-line-start-to-tray` に変更しました。
+- セットアップ画面、スタートメニュー、配布ファイル名と案内を新しい名前に統一しました。
+- 更新時には、本ツールを指す旧名のスタートメニュー項目を新しい名前へ置き換えます。既存の自動起動設定とバックアップは引き継ぎます。
+- READMEに開発・文章校正で使用したAIモデルを記載しました。
 
 LINEの非表示起動を担当するEXEとDLLは、前版と同じものを使用しています。
 
@@ -11,7 +12,7 @@ Windowsへのサインイン時に、LINEの画面を出さずに通知領域へ
 
 ### ダウンロードするもの
 
-**Assetsの `LineTrayStartup-Setup-0.2.0-preview.2.exe` をダウンロードしてください。**
+**Assetsの `WindowsLineStartToTray-Setup-0.2.0-preview.3.exe` をダウンロードしてください。**
 `Source code (zip)` や `Source code (tar.gz)` は開発者向けです。
 
 ### セットアップ
@@ -30,4 +31,4 @@ Windows 11 Home 23H2 x64・Microsoft StoreからインストールしたLINE 26.
 
 コード署名はありません。照合用の `SHA256SUMS.txt` を添付しています（通常の利用ではダウンロード不要です）。LINE本体やログイン情報は同梱していません。
 
-[利用手順と仕組み](https://github.com/hinatamaxxx/line-startup-to-tray#readme) · [不具合の報告](https://github.com/hinatamaxxx/line-startup-to-tray/issues)
+[利用手順と仕組み](https://github.com/hinatamaxxx/windows-line-start-to-tray#readme) · [不具合の報告](https://github.com/hinatamaxxx/windows-line-start-to-tray/issues)

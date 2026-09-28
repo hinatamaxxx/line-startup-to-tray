@@ -1,12 +1,12 @@
-# LINE Tray Startup
+# Windows版LINEを通知領域で起動
 
 **PC起動時、LINEの画面を出さずに通知領域へ。**
 
 Windowsへのサインイン時にLINEを起動し、時計の近くにある通知領域（タスクトレイ）へ常駐させる非公式ツールです。LINEを開きたいときは、通知領域のアイコンをダブルクリックします。
 
-**[セットアップEXEをダウンロード](https://github.com/hinatamaxxx/line-startup-to-tray/releases/download/v0.2.0-preview.2/LineTrayStartup-Setup-0.2.0-preview.2.exe)** · [リリース一覧](https://github.com/hinatamaxxx/line-startup-to-tray/releases)
+**[セットアップEXEをダウンロード](https://github.com/hinatamaxxx/windows-line-start-to-tray/releases/download/v0.2.0-preview.3/WindowsLineStartToTray-Setup-0.2.0-preview.3.exe)** · [リリース一覧](https://github.com/hinatamaxxx/windows-line-start-to-tray/releases)
 
-> 現在は **v0.2.0-preview.2（プレビュー版）** です。Windows 11 x64・Microsoft StoreからインストールしたLINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。**PC再起動を伴う最終確認は未実施**です。すべてのLINEバージョンでの動作を保証するものではありません。
+> 現在は **v0.2.0-preview.3（プレビュー版）** です。Windows 11 x64・Microsoft StoreからインストールしたLINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。**PC再起動を伴う最終確認は未実施**です。すべてのLINEバージョンでの動作を保証するものではありません。
 
 ![セットアップ画面](docs/images/setup.png)
 
@@ -32,7 +32,7 @@ Windowsのテーマに合わせてライト／ダークで表示します。右�
 
 ### 2. セットアップEXEを開く
 
-上のダウンロードリンクから `LineTrayStartup-Setup-0.2.0-preview.2.exe` を保存し、ダブルクリックします。画面の **「セットアップ」** を押し、完了表示を待ってください。
+上のダウンロードリンクから `WindowsLineStartToTray-Setup-0.2.0-preview.3.exe` を保存し、ダブルクリックします。画面の **「セットアップ」** を押し、完了表示を待ってください。
 
 - 管理者権限、コマンド入力、GitやVisual Studioのインストールは不要です。
 - 必要なファイルはセットアップEXEに含まれています。セットアップ中の追加ダウンロードはありません。
@@ -54,7 +54,7 @@ Windowsのテーマに合わせてライト／ダークで表示します。右�
 | --- | --- |
 | LINEを開く | 通知領域のLINEアイコンをダブルクリック |
 | LINEを終了する | 通知領域のアイコンを右クリック →「終了」 |
-| セットアップ画面を開く | スタートメニューで **LINE Tray Startup** を検索 |
+| セットアップ画面を開く | スタートメニューで **Windows版LINEを通知領域で起動** を検索 |
 | 手動で非表示起動を試す | LINEを終了後、セットアップ画面の「LINEを起動」 |
 
 LINEの自動ログイン設定は、引き続きLINE本体で管理します。通常のLINEショートカットから起動した場合は、本ツールを通さず通常どおり開きます。
@@ -115,6 +115,8 @@ flowchart TD
 
 ## 更新する
 
+旧名「LINE Tray Startup」を使っている方も、同じ手順で更新できます。スタートメニューの名前は「Windows版LINEを通知領域で起動」に変わります。既存の設定を引き継ぐため、保存先フォルダーとWindowsのスタートアップ項目名は `LineTrayStartup` のままです。
+
 1. 通知領域のメニューからLINEを「終了」します。
 2. 新しいリリースのセットアップEXEをダウンロードして開きます。
 3. 「セットアップ」を押すと新しい版に更新されます。初回導入前の自動起動設定のバックアップは自動で引き継ぎます。
@@ -123,7 +125,7 @@ flowchart TD
 
 ## 元に戻す・削除する
 
-1. スタートメニューの **LINE Tray Startup**、またはダウンロードしたセットアップEXEを開きます。
+1. スタートメニューの **Windows版LINEを通知領域で起動**、またはダウンロードしたセットアップEXEを開きます。
 2. **「設定を元に戻す」** を押します。
 3. LINEを通知領域から「終了」し、通常のLINEショートカットから起動し直します。
 
@@ -153,10 +155,21 @@ Windowsの「設定 → アプリ → スタートアップ」で、**LineTraySt
 
 「^」の中も確認してください。見当たらない場合は通常のLINEショートカットから起動できます。問題が続く場合は、セットアップ画面の「設定を元に戻す」を使用してください。
 
-[不具合を報告](https://github.com/hinatamaxxx/line-startup-to-tray/issues)する際は、WindowsとLINEのバージョン、どの操作で起きたかを添えてください。診断ログは保存先の `diagnostic.log` です。処理名・プロセスID・ウィンドウクラス・数値を記録し、会話本文や認証情報は記録しません。`startup-backup.json` にはユーザー名を含むパスが入る場合があるため、公開の報告には添付しないでください。
+[不具合を報告](https://github.com/hinatamaxxx/windows-line-start-to-tray/issues)する際は、WindowsとLINEのバージョン、どの操作で起きたかを添えてください。診断ログは保存先の `diagnostic.log` です。処理名・プロセスID・ウィンドウクラス・数値を記録し、会話本文や認証情報は記録しません。`startup-backup.json` にはユーザー名を含むパスが入る場合があるため、公開の報告には添付しないでください。
 
 ## 開発者向け
 
 自分でビルドする場合は、[ビルドとテストの手順](docs/development.md)をご覧ください。通常の利用にはビルドは不要です。
+
+## 開発に使用したAIモデル
+
+このツールは、利用者の要望と実機での確認をもとに、AIコーディングツールを使って開発しました。開発記録で確認できたモデルは次のとおりです。
+
+| 用途 | ツール | 使用モデル |
+| --- | --- | --- |
+| 設計・実装・テスト・ドキュメント作成 | OpenAI Codex | `gpt-6-astra`、`gpt-6-sol`、`gpt-6-luna` |
+| 利用者向けの説明文の校正 | Antigravity CLI | Gemini 3.8 Flash (High) |
+
+これらは開発時に使用したものです。本ツールを利用するために、AIサービスのアカウントやAPIキーは必要ありません。
 
 本ツールのライセンスは[MIT](LICENSE)です。Microsoft Detoursにも[MITライセンス](third_party/Detours/LICENSE.md)が適用されます。LINEの名称とロゴは権利者に帰属します。本ツールはLINE公式が提供・サポートするものではありません。

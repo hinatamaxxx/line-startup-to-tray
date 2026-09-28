@@ -7,15 +7,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-[assembly: AssemblyTitle("LINE Tray Startup Setup")]
-[assembly: AssemblyVersion("0.2.0.1")]
-[assembly: AssemblyFileVersion("0.2.0.1")]
+[assembly: AssemblyTitle("Windows版LINEを通知領域で起動 Setup")]
+[assembly: AssemblyVersion("0.2.0.3")]
+[assembly: AssemblyFileVersion("0.2.0.3")]
 
 internal static class Program
 {
-    internal const string Version = "0.2.0-preview.2";
+    internal const string Version = "0.2.0-preview.3";
     internal static readonly string Home = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LineTrayStartup");
-    internal static readonly string Shortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), "LINE Tray Startup.lnk");
+    internal static readonly string Shortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), "Windows版LINEを通知領域で起動.lnk");
     internal static readonly string[] Payloads = { "Install.ps1", "Uninstall.ps1", "LineTrayStart.exe", "LineTrayHook32.dll", "LineTrayHook64.dll", "LICENSE.txt", "Detours-LICENSE.txt", "GUIDE.txt" };
 
     [STAThread]
@@ -83,8 +83,30 @@ internal static class Program
             Type type = shortcut.GetType();
             type.InvokeMember("TargetPath", BindingFlags.SetProperty, null, shortcut, new object[] { target });
             type.InvokeMember("WorkingDirectory", BindingFlags.SetProperty, null, shortcut, new object[] { home });
-            type.InvokeMember("Description", BindingFlags.SetProperty, null, shortcut, new object[] { "LINE Tray Startup の設定と解除" });
+            type.InvokeMember("Description", BindingFlags.SetProperty, null, shortcut, new object[] { "Windows版LINEを通知領域で起動 の設定と解除" });
             type.InvokeMember("Save", BindingFlags.InvokeMethod, null, shortcut, null);
+            RemoveLegacyShortcut(home, shortcutPath);
+        }
+        finally
+        {
+            if (shortcut != null) Marshal.ReleaseComObject(shortcut);
+            Marshal.ReleaseComObject(shell);
+        }
+    }
+
+    internal static void RemoveLegacyShortcut(string home, string shortcutPath)
+    {
+        string legacy = Path.Combine(Path.GetDirectoryName(shortcutPath), "LINE Tray Startup.lnk");
+        if (!File.Exists(legacy)) return;
+        Type shellType = Type.GetTypeFromProgID("WScript.Shell");
+        object shell = Activator.CreateInstance(shellType);
+        object shortcut = null;
+        try
+        {
+            shortcut = shellType.InvokeMember("CreateShortcut", BindingFlags.InvokeMethod, null, shell, new object[] { legacy });
+            string target = (string)shortcut.GetType().InvokeMember("TargetPath", BindingFlags.GetProperty, null, shortcut, null);
+            if (String.Equals(target, Path.Combine(home, "Setup.exe"), StringComparison.OrdinalIgnoreCase))
+                File.Delete(legacy);
         }
         finally
         {

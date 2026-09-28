@@ -1,4 +1,4 @@
-﻿param([string]$Setup = (Join-Path $PSScriptRoot '..\release\LineTrayStartup-Setup-0.2.0-preview.2.exe'))
+﻿param([string]$Setup = (Join-Path $PSScriptRoot '..\release\WindowsLineStartToTray-Setup-0.2.0-preview.3.exe'))
 $ErrorActionPreference = 'Stop'
 $Setup = (Resolve-Path $Setup).Path
 $id = [Guid]::NewGuid().ToString('N')
@@ -20,13 +20,25 @@ try {
     $method = $assembly.GetType('Program').GetMethod('SaveSupportFiles', [Reflection.BindingFlags]'NonPublic,Static')
     $homePath = "$testRoot\data\LineTrayStartup"
     $shortcutPath = "$testRoot\setup.lnk"
-    $method.Invoke($null, [object[]]@([string]$payload, [string]$homePath, [string]$Setup, [string]$shortcutPath)) | Out-Null
     $shell = New-Object -ComObject WScript.Shell
+    $legacyPath = "$testRoot\LINE Tray Startup.lnk"
+    $legacy = $shell.CreateShortcut($legacyPath)
+    $legacy.TargetPath = "$homePath\Setup.exe"
+    $legacy.Save()
+    [void][Runtime.InteropServices.Marshal]::ReleaseComObject($legacy)
+    $method.Invoke($null, [object[]]@([string]$payload, [string]$homePath, [string]$Setup, [string]$shortcutPath)) | Out-Null
+    if (Test-Path -LiteralPath $legacyPath) { throw 'Legacy shortcut was not migrated.' }
+    $legacy = $shell.CreateShortcut($legacyPath)
+    $legacy.TargetPath = "$testRoot\unrelated.exe"
+    $legacy.Save()
+    [void][Runtime.InteropServices.Marshal]::ReleaseComObject($legacy)
+    $method.Invoke($null, [object[]]@([string]$payload, [string]$homePath, [string]$Setup, [string]$shortcutPath)) | Out-Null
+    if (!(Test-Path -LiteralPath $legacyPath)) { throw 'Unrelated shortcut was removed.' }
     $shortcut = $shell.CreateShortcut($shortcutPath)
     if ($shortcut.TargetPath -ne "$homePath\Setup.exe") { throw 'Start menu shortcut target mismatch.' }
     [void][Runtime.InteropServices.Marshal]::ReleaseComObject($shortcut)
     [void][Runtime.InteropServices.Marshal]::ReleaseComObject($shell)
-    Write-Output 'PASS: embedded payload hashes and setup shortcut.'
+    Write-Output 'PASS: embedded payload hashes, setup shortcut, legacy migration, unrelated shortcut preserved.'
 } finally {
     if ($registryPath -match '^Software\\LineTrayStartup\.Tests\\[a-f0-9]{32}$') { [Microsoft.Win32.Registry]::CurrentUser.DeleteSubKeyTree($registryPath, $false) }
     $resolved = [IO.Path]::GetFullPath($testRoot)
