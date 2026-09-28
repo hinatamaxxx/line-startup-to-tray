@@ -6,7 +6,7 @@ Windowsへのサインイン時にLINEを起動し、時計の近くにある通
 
 **[セットアップEXEをダウンロード](https://github.com/hinatamaxxx/line-startup-to-tray/releases/download/v0.2.0-preview.2/LineTrayStartup-Setup-0.2.0-preview.2.exe)** · [リリース一覧](https://github.com/hinatamaxxx/line-startup-to-tray/releases)
 
-> 現在は **v0.2.0-preview.2（プレビュー版）** です。Windows 11 x64・LINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。**PC再起動を伴う最終確認は未実施**です。すべてのLINEバージョンでの動作を保証するものではありません。
+> 現在は **v0.2.0-preview.2（プレビュー版）** です。Windows 11 x64・Microsoft StoreからインストールしたLINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。**PC再起動を伴う最終確認は未実施**です。すべてのLINEバージョンでの動作を保証するものではありません。
 
 ![セットアップ画面](docs/images/setup.png)
 
@@ -104,7 +104,7 @@ flowchart TD
 | --- | --- |
 | 対象OS | Windows 10 / 11、x64。実機確認はWindows 11 Home 23H2 |
 | LINE | `%LOCALAPPDATA%\LINE\bin\LineLauncher.exe` があるデスクトップ版 |
-| 確認済みLINE | **26.4.2.3957**。ほかのバージョンは未確認 |
+| 確認済みLINE | **Microsoft Storeからインストールした26.4.2.3957**。ほかのバージョン・配布経路は未確認 |
 | Windows ARM / 32bit OS | 対象外 |
 | 権限 | 現在ログインしているユーザーに導入。管理者権限は不要 |
 
@@ -139,7 +139,7 @@ LINEのウィンドウを閉じるだけでなく、通知領域のアイコン�
 
 ### 「LINEのランチャーが見つかりません」と表示される
 
-デスクトップ版LINEが必要です。上の「対応環境」に記載した場所にインストールされているか確認してください。別の場所にインストールしたLINEは、この版では自動検出できません。パスを確認するときは、エクスプローラーのアドレスバーに `%LOCALAPPDATA%\LINE\bin` と入力します。Microsoft Storeから導入した版の動作は未確認です。
+上の「対応環境」に記載した場所にLINEがインストールされているか確認してください。動作確認に使ったMicrosoft StoreからインストールしたLINEでも、この場所に `LineLauncher.exe` があります。別の場所にインストールしたLINEは、この版では自動検出できません。パスを確認するときは、エクスプローラーのアドレスバーに `%LOCALAPPDATA%\LINE\bin` と入力します。
 
 ### ダウンロードしたEXEについてWindowsの警告が出る
 
