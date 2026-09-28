@@ -1,7 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-set "VSROOT=C:\Program Files\Microsoft Visual Studio\2022\Community"
+if not defined VSROOT set "VSROOT=C:\Program Files\Microsoft Visual Studio\2022\Community"
 if not exist "%VSROOT%\VC\Auxiliary\Build\vcvarsall.bat" exit /b 1
 call "%VSROOT%\VC\Auxiliary\Build\vcvarsall.bat" x86 >nul
 if errorlevel 1 exit /b 1

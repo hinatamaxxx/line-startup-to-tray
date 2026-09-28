@@ -1,5 +1,6 @@
 ﻿$ErrorActionPreference = 'Stop'
 $target = Join-Path $env:LOCALAPPDATA 'LineTrayStartup'
+$OutputEncoding = [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $approved = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run'
 $runKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
 $backupPath = Join-Path $target 'startup-backup.json'
@@ -20,4 +21,6 @@ if ($null -ne $backup.Approved) {
 } else {
     Remove-ItemProperty -Path $approved -Name LINE -ErrorAction SilentlyContinue
 }
+# A later installation must capture the user's then-current settings again.
+Move-Item -LiteralPath $backupPath -Destination (Join-Path $target 'startup-backup.restored.json') -Force
 Write-Output 'LINE本来の自動起動設定に戻しました。LINEを通常終了して再起動するとフックも外れます。'

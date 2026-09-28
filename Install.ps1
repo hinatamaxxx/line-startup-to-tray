@@ -1,5 +1,6 @@
 ﻿$ErrorActionPreference = 'Stop'
 $target = Join-Path $env:LOCALAPPDATA 'LineTrayStartup'
+$OutputEncoding = [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $approved = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run'
 $runKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
 $entryName = 'LineTrayStartup'
@@ -7,6 +8,9 @@ if (!(Test-Path "$env:LOCALAPPDATA\LINE\bin\LineLauncher.exe")) {
     throw 'LINEのランチャーが見つかりません。'
 }
 $files = 'LineTrayStart.exe', 'LineTrayHook32.dll', 'LineTrayHook64.dll'
+foreach ($name in $files) {
+    if (!(Test-Path -LiteralPath "$PSScriptRoot\dist\$name" -PathType Leaf)) { throw "セットアップに必要なファイルがありません: $name" }
+}
 # A finite installation check; no process remains to monitor LINE.
 $changed = @($files | Where-Object {
     $destination = Join-Path $target $_

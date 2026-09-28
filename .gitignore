@@ -1,3 +1,5 @@
 /build/
 /dist/
+/release/
 *.log
+startup-backup*.json
