@@ -1,4 +1,4 @@
-﻿param([string]$Setup = (Join-Path $PSScriptRoot '..\release\LineTrayStartup-Setup-0.2.0-preview.1.exe'))
+﻿param([string]$Setup = (Join-Path $PSScriptRoot '..\release\LineTrayStartup-Setup-0.2.0-preview.2.exe'))
 $ErrorActionPreference = 'Stop'
 $Setup = (Resolve-Path $Setup).Path
 $id = [Guid]::NewGuid().ToString('N')

@@ -4,11 +4,20 @@
 
 Windowsへのサインイン時にLINEを起動し、時計の近くにある通知領域（タスクトレイ）へ常駐させる非公式ツールです。LINEを開きたいときは、通知領域のアイコンをダブルクリックします。
 
-**[セットアップEXEをダウンロード](https://github.com/hinatamaxxx/line-startup-to-tray/releases/download/v0.2.0-preview.1/LineTrayStartup-Setup-0.2.0-preview.1.exe)** · [リリース一覧](https://github.com/hinatamaxxx/line-startup-to-tray/releases)
+**[セットアップEXEをダウンロード](https://github.com/hinatamaxxx/line-startup-to-tray/releases/download/v0.2.0-preview.2/LineTrayStartup-Setup-0.2.0-preview.2.exe)** · [リリース一覧](https://github.com/hinatamaxxx/line-startup-to-tray/releases)
 
-> 現在は **v0.2.0-preview.1（プレビュー版）** です。Windows 11 x64・LINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。**PC再起動を伴う最終確認は未実施**です。すべてのLINEバージョンでの動作を保証するものではありません。
+> 現在は **v0.2.0-preview.2（プレビュー版）** です。Windows 11 x64・LINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。**PC再起動を伴う最終確認は未実施**です。すべてのLINEバージョンでの動作を保証するものではありません。
 
 ![セットアップ画面](docs/images/setup.png)
+
+Windowsのテーマに合わせてライト／ダークで表示します。右上の月のボタンでも切り替えられます。
+
+<details>
+<summary>ダークテーマの画面を見る</summary>
+
+![ダークテーマのセットアップ画面](docs/images/setup-dark.png)
+
+</details>
 
 ## セットアップ：3ステップ
 
@@ -23,7 +32,7 @@ Windowsへのサインイン時にLINEを起動し、時計の近くにある通
 
 ### 2. セットアップEXEを開く
 
-上のダウンロードリンクから `LineTrayStartup-Setup-0.2.0-preview.1.exe` を保存し、ダブルクリックします。画面の **「セットアップ」** を押し、完了表示を待ってください。
+上のダウンロードリンクから `LineTrayStartup-Setup-0.2.0-preview.2.exe` を保存し、ダブルクリックします。画面の **「セットアップ」** を押し、完了表示を待ってください。
 
 - 管理者権限、コマンド入力、GitやVisual Studioのインストールは不要です。
 - 必要なファイルはセットアップEXEに含まれています。セットアップ中の追加ダウンロードはありません。

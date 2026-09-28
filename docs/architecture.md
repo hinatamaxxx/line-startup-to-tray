@@ -12,7 +12,7 @@ LINE Tray Startupは、LINE本体をディスク上で書き換えず、起動�
 | `Setup.exe` | セットアップ・復元・手動起動の画面を提供する |
 | `Install.ps1` / `Uninstall.ps1` | 導入時と復元時だけ、自動起動の登録を変更する |
 
-ソースはそれぞれ [Launcher.cpp](../native/Launcher.cpp)、[Hook.cpp](../native/Hook.cpp)、[Setup.cs](../setup/Setup.cs)です。32bitと64bitのDLLは同じソースを異なる対象アーキテクチャでビルドします。
+ソースはそれぞれ [Launcher.cpp](../native/Launcher.cpp)、[Hook.cpp](../native/Hook.cpp)、[Setup.cs](../setup/Setup.cs)です。セットアップ画面はWPFで作り、[SetupWindow.xaml](../setup/SetupWindow.xaml)にレイアウトと配色、[SetupWindow.cs](../setup/SetupWindow.cs)に操作と状態表示を定義しています。32bitと64bitのDLLは同じソースを異なる対象アーキテクチャでビルドします。
 
 ## 起動から通知領域まで
 

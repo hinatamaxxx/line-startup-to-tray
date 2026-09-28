@@ -31,6 +31,12 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tests\Test-Setup.ps1
 
 セットアップEXEからリソースを取り出し、バイナリのハッシュ、導入、二重実行、設定の復元、再導入、ショートカットを確認します。テスト専用のフォルダーとレジストリを使い、現在のLINEの設定は変更しません。実際のLINEプロセスの存在は、このテストでは模擬します。
 
+セットアップ画面は.NET FrameworkのWPFを使います。次のテストでは、テーマ切り替え、処理中の操作制限、狭い画面でのレイアウトを確認します。
+
+```powershell
+powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\tests\Test-SetupWindow.ps1
+```
+
 `--extract <directory>` はテスト用の展開オプションです。セットアップ処理やスタートアップ登録は実行しません。
 
 ## 表示制御のテスト
