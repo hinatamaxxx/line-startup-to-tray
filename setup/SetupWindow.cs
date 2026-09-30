@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using Microsoft.Win32;
+using System.Management;
+using System.Security.Principal;
 
 internal sealed class SetupWindow : Window
 {
@@ -78,12 +80,27 @@ internal sealed class SetupWindow : Window
     {
         string exe = Path.Combine(Program.Home, "LineTrayStart.exe");
         if (!File.Exists(exe)) return false;
-        using (RegistryKey run = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run"))
-        using (RegistryKey approved = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"))
+        string root = WindowsIdentity.GetCurrent().User.Value + @"\Software\Microsoft\Windows\CurrentVersion\";
+        using (var registry = new ManagementClass(@"root\default", "StdRegProv", null))
+        using (var input = registry.GetMethodParameters("GetStringValue"))
         {
-            byte[] flag = approved == null ? null : approved.GetValue("LINE") as byte[];
-            return run != null && String.Equals(run.GetValue("LINE") as string, "\"" + exe + "\"", StringComparison.OrdinalIgnoreCase)
-                && (flag == null || flag.Length == 0 || flag[0] == 2);
+            input["hDefKey"] = (uint)0x80000003;
+            input["sSubKeyName"] = root + "Run";
+            input["sValueName"] = "LINE";
+            using (var output = registry.InvokeMethod("GetStringValue", input, null))
+                if (Convert.ToUInt32(output["ReturnValue"]) != 0 || !String.Equals(output["sValue"] as string, "\"" + exe + "\"", StringComparison.OrdinalIgnoreCase)) return false;
+            using (var approvalInput = registry.GetMethodParameters("GetBinaryValue"))
+            {
+                approvalInput["hDefKey"] = (uint)0x80000003;
+                approvalInput["sSubKeyName"] = root + @"Explorer\StartupApproved\Run";
+                approvalInput["sValueName"] = "LINE";
+                using (var output = registry.InvokeMethod("GetBinaryValue", approvalInput, null))
+                {
+                    uint error = Convert.ToUInt32(output["ReturnValue"]);
+                    byte[] flag = output["uValue"] as byte[];
+                    return (error == 1 || error == 2) || (error == 0 && (flag == null || flag.Length == 0 || flag[0] == 2));
+                }
+            }
         }
     }
 

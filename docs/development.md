@@ -31,6 +31,15 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tests\Test-Setup.ps1
 
 セットアップEXEからリソースを取り出し、バイナリのハッシュ、導入、二重実行、設定の復元、再導入、ショートカットを確認します。テスト専用のフォルダーとレジストリを使い、現在のLINEの設定は変更しません。実際のLINEプロセスの存在は、このテストでは模擬します。
 
+レジストリのテストは、PowerShellのHKCUドライブを差し替える方式から、WMIで実際のユーザーハイブのGUID付きテスト領域を使う方式に変更しています。テスト後にはその領域の削除を確認します。通常プロセスへの起動し直しは、設定を変更しない専用モードで確認します。
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tests\Test-StartupRegistry.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tests\Test-SetupContext.ps1
+```
+
+セットアップEXEの `--install <結果ファイル>` は自動導入用です。通常プロセスへの起動し直しも行い、完了時に `PASS`、失敗時に `ERROR: ...` を結果ファイルへ書きます。起動し直すため、呼び出した最初のプロセスの終了だけで導入完了とは判定できません。実機への導入をCodexから行う場合、`Install.ps1` を直接実行せず、このEXEを使ってください。
+
 セットアップ画面は.NET FrameworkのWPFを使います。次のテストでは、テーマ切り替え、処理中の操作制限、狭い画面でのレイアウトを確認します。
 
 ```powershell

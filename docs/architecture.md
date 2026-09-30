@@ -14,6 +14,16 @@ Windows版LINEを通知領域で起動は、LINE本体をディスク上で書�
 
 ソースはそれぞれ [Launcher.cpp](../native/Launcher.cpp)、[Hook.cpp](../native/Hook.cpp)、[Setup.cs](../setup/Setup.cs)です。セットアップ画面はWPFで作り、[SetupWindow.xaml](../setup/SetupWindow.xaml)にレイアウトと配色、[SetupWindow.cs](../setup/SetupWindow.cs)に操作と状態表示を定義しています。32bitと64bitのDLLは同じソースを異なる対象アーキテクチャでビルドします。
 
+## セットアップの隔離を避ける処理
+
+Codexの実行環境から起動した子プロセスでは、レジストリとAppDataへの書き込みがCodex専用の領域へ転送されていました。そこで読み返しても変更済みに見えるため、Windowsが実際に使う設定とファイルを確認できていませんでした。
+
+セットアップEXEは、最初にWMIの `Win32_Process.Create` で自分自身を通常のWindowsプロセスとして起動し直します。この処理はセットアップ画面の起動時だけ行い、再起動を繰り返さないための引数を付けています。実行ファイルの保存先には `GetFinalPathNameByHandle` で取得した実際のパスを使い、元のEXEが隔離領域にある場合にも対応します。PowerShell子プロセスにはWindows PowerShellの標準モジュールパスを明示します。
+
+レジストリ操作は [StartupRegistry.ps1](../StartupRegistry.ps1) で、システムの `StdRegProv` を使って `HKEY_USERS\<現在のユーザーSID>` 内の実際の値を読み書きします。各戻り値と変更後の値を確認します。セットアップ済みかどうかの表示も、同じ実レジストリを参照します。
+
+実機の確認では、`Win32_StartupCommand` と `StdRegProv` で起動先を読み取り、`CIM_DataFile` と通常プロセスからのファイル確認で、実際のLocalAppDataへ補助EXEとDLLが存在することを確かめています。`GetCurrentPackageFullName` はこの環境で隔離されたプロセスでも「パッケージなし」を返したため、隔離判定には使っていません。
+
 ## 起動から通知領域まで
 
 1. Windowsのユーザー別スタートアップから `LineTrayStart.exe` を起動します。
@@ -60,10 +70,12 @@ LINEの認証ファイル、会話データ、認証関連のレジストリは�
 - 利用者がアイコンのダブルクリックによる再表示とログイン維持を確認。
 - セットアップの導入、繰り返し実行、設定の復元、再導入、ショートカットを独立したテスト領域で確認。
 
-2026年9月30日、旧方式ではPC再起動後のLINEに補助DLLが読み込まれず、画面とアイコンの処理が適用されない問題を確認しました。v0.2.0-preview.4で自動起動の登録方式を変更しています。**修正後のPC再起動による最終確認は、引き続き必要です。**
+2026年9月30日、再起動後のLINEに補助DLLが読み込まれない問題を確認しました。v0.2.0-preview.4で起動項目を変更しても、設定とファイルがCodex専用の隔離領域へ保存され、実際のWindowsには適用されていませんでした。v0.2.0-preview.5で通常プロセスへの起動し直しと実レジストリの操作を追加し、実ファイルと実際の起動項目を確認しています。**この修正後のPC再起動による最終確認は、引き続き必要です。**
 
 ## 参考
 
 - [Microsoft Detours](https://github.com/microsoft/Detours)
 - [DetourCreateProcessWithDllEx](https://github.com/microsoft/Detours/wiki/DetourCreateProcessWithDllEx)
 - [Using Detours](https://github.com/microsoft/Detours/wiki/Using-Detours)
+- [Microsoft: Flexible virtualization](https://learn.microsoft.com/en-us/windows/msix/desktop/flexible-virtualization)
+- [Microsoft: StdRegProv](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/regprov/stdregprov)

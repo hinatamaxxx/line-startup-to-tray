@@ -4,9 +4,9 @@
 
 Windowsへのサインイン時にLINEを起動し、時計の近くにある通知領域（タスクトレイ）へ常駐させる非公式ツールです。LINEを開きたいときは、通知領域のアイコンをダブルクリックします。
 
-**[セットアップEXEをダウンロード](https://github.com/hinatamaxxx/windows-line-start-to-tray/releases/download/v0.2.0-preview.4/WindowsLineStartToTray-Setup-0.2.0-preview.4.exe)** · [リリース一覧](https://github.com/hinatamaxxx/windows-line-start-to-tray/releases)
+**[セットアップEXEをダウンロード](https://github.com/hinatamaxxx/windows-line-start-to-tray/releases/download/v0.2.0-preview.5/WindowsLineStartToTray-Setup-0.2.0-preview.5.exe)** · [リリース一覧](https://github.com/hinatamaxxx/windows-line-start-to-tray/releases)
 
-> 現在は **v0.2.0-preview.4（プレビュー版）** です。Windows 11 x64・Microsoft StoreからインストールしたLINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。旧版で再起動時の起動経路に問題があったため、自動起動の登録方式を変更しました。**修正後のPC再起動を伴う最終確認は未実施**です。すべてのLINEバージョンでの動作を保証するものではありません。
+> 現在は **v0.2.0-preview.5（プレビュー版）** です。Windows 11 x64・Microsoft StoreからインストールしたLINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。AIツールなどから導入した際に設定とファイルが隔離領域へ保存される問題を修正し、Windowsが使う実際の保存先と起動設定を確認しました。**修正後のPC再起動を伴う最終確認は未実施**です。すべてのLINEバージョンでの動作を保証するものではありません。
 
 ![セットアップ画面](docs/images/setup.png)
 
@@ -32,7 +32,7 @@ Windowsのテーマに合わせてライト／ダークで表示します。右�
 
 ### 2. セットアップEXEを開く
 
-上のダウンロードリンクから `WindowsLineStartToTray-Setup-0.2.0-preview.4.exe` を保存し、ダブルクリックします。画面の **「セットアップ」** を押し、完了表示を待ってください。
+上のダウンロードリンクから `WindowsLineStartToTray-Setup-0.2.0-preview.5.exe` を保存し、ダブルクリックします。画面の **「セットアップ」** を押し、完了表示を待ってください。
 
 - 管理者権限、コマンド入力、GitやVisual Studioのインストールは不要です。
 - 必要なファイルはセットアップEXEに含まれています。セットアップ中の追加ダウンロードはありません。
@@ -149,7 +149,7 @@ LINEのウィンドウを閉じるだけでなく、通知領域のアイコン�
 
 ### 再起動するとLINEの画面が出る
 
-v0.2.0-preview.3までの方式では、実機の再起動後に本ツールを通らずLINEが起動する問題を確認しました。最新のセットアップEXEで再セットアップしてください。v0.2.0-preview.4ではWindowsの `LINE` 起動項目を直接本ツールへ切り替えています。
+v0.2.0-preview.4まで、Codexなどのアプリから導入した際に、設定やファイルがそのアプリ専用の隔離領域へ保存される問題を確認しました。画面上はセットアップ済みでもWindows本体には適用されず、再起動時に通常のLINEが開く状態でした。最新のセットアップEXEで再セットアップしてください。v0.2.0-preview.5ではセットアップを通常のWindowsプロセスとして実行し、実際のユーザー設定へ登録します。
 
 Windowsの「設定 → アプリ → スタートアップ」では、**LINEをON** にしてください。LINE本体の自動起動設定を変更した後にも再セットアップが必要になる場合があります。問題が続く場合は `diagnostic.log` の再起動後の `helper-start` と `line-hook-attached` の有無を確認して報告してください。解決しない場合は「設定を元に戻す」で通常起動へ戻せます。
 

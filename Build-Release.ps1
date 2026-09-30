@@ -1,6 +1,6 @@
 ﻿param([switch]$SkipNativeBuild)
 $ErrorActionPreference = 'Stop'
-$version = '0.2.0-preview.4'
+$version = '0.2.0-preview.5'
 Push-Location $PSScriptRoot
 try {
     if (!$SkipNativeBuild) {
@@ -12,8 +12,8 @@ try {
     $compiler = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
     $wpf = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\WPF'
     $arguments = @('/nologo', '/target:winexe', '/platform:x64', '/optimize+', '/utf8output', '/win32manifest:setup\app.manifest', '/win32icon:setup\app.ico', '/resource:setup\app.ico,AppIcon.ico', "/out:$output",
-        "/reference:$wpf\PresentationFramework.dll", "/reference:$wpf\PresentationCore.dll", "/reference:$wpf\WindowsBase.dll", '/reference:System.Xaml.dll', '/reference:System.Core.dll',
-        '/resource:Install.ps1,Install.ps1', '/resource:Uninstall.ps1,Uninstall.ps1', '/resource:setup\GUIDE.txt,GUIDE.txt',
+        "/reference:$wpf\PresentationFramework.dll", "/reference:$wpf\PresentationCore.dll", "/reference:$wpf\WindowsBase.dll", '/reference:System.Xaml.dll', '/reference:System.Core.dll', '/reference:System.Management.dll',
+        '/resource:Install.ps1,Install.ps1', '/resource:Uninstall.ps1,Uninstall.ps1', '/resource:StartupRegistry.ps1,StartupRegistry.ps1', '/resource:setup\GUIDE.txt,GUIDE.txt',
         '/resource:dist\LineTrayStart.exe,LineTrayStart.exe', '/resource:dist\LineTrayHook32.dll,LineTrayHook32.dll',
         '/resource:dist\LineTrayHook64.dll,LineTrayHook64.dll', '/resource:LICENSE,LICENSE.txt',
         '/resource:third_party\Detours\LICENSE.md,Detours-LICENSE.txt', '/resource:setup\SetupWindow.xaml,SetupWindow.xaml', 'setup\Setup.cs', 'setup\SetupWindow.cs')
