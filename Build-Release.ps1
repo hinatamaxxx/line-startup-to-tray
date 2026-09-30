@@ -1,6 +1,6 @@
 ﻿param([switch]$SkipNativeBuild)
 $ErrorActionPreference = 'Stop'
-$version = '0.2.0-preview.3'
+$version = '0.2.0-preview.4'
 Push-Location $PSScriptRoot
 try {
     if (!$SkipNativeBuild) {

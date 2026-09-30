@@ -40,10 +40,11 @@ if (!$backup.PSObject.Properties['HelperRun']) {
 foreach ($name in $changed) { Copy-Item -LiteralPath "$PSScriptRoot\dist\$name" -Destination $target }
 if (!(Test-Path $runKey)) { New-Item -Path $runKey -Force | Out-Null }
 if (!(Test-Path $approved)) { New-Item -Path $approved -Force | Out-Null }
-New-ItemProperty -Path $runKey -Name $entryName -PropertyType String -Value ('"' + (Join-Path $target 'LineTrayStart.exe') + '"') -Force | Out-Null
-New-ItemProperty -Path $approved -Name $entryName -PropertyType Binary -Value ([byte[]](2,0,0,0,0,0,0,0,0,0,0,0)) -Force | Out-Null
-# Leave LINE's original command intact; disable its duplicate automatic launch.
-New-ItemProperty -Path $approved -Name LINE -PropertyType Binary -Value ([byte[]](3,0,0,0,0,0,0,0,0,0,0,0)) -Force | Out-Null
+# Route the existing LINE startup entry through the helper, with one launch path.
+New-ItemProperty -Path $runKey -Name LINE -PropertyType String -Value ('"' + (Join-Path $target 'LineTrayStart.exe') + '"') -Force | Out-Null
+New-ItemProperty -Path $approved -Name LINE -PropertyType Binary -Value ([byte[]](2,0,0,0,0,0,0,0,0,0,0,0)) -Force | Out-Null
+Remove-ItemProperty -Path $runKey -Name $entryName -ErrorAction SilentlyContinue
+Remove-ItemProperty -Path $approved -Name $entryName -ErrorAction SilentlyContinue
 $oldTask = Get-ScheduledTask -TaskName 'LINE startup to tray' -ErrorAction SilentlyContinue
 if ($oldTask) { Unregister-ScheduledTask -TaskName 'LINE startup to tray' -Confirm:$false }
 Write-Output 'Windowsのスタートアップに登録しました。次回サインインから適用されます。'

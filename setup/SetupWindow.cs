@@ -81,8 +81,8 @@ internal sealed class SetupWindow : Window
         using (RegistryKey run = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run"))
         using (RegistryKey approved = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"))
         {
-            byte[] flag = approved == null ? null : approved.GetValue("LineTrayStartup") as byte[];
-            return run != null && String.Equals(run.GetValue("LineTrayStartup") as string, "\"" + exe + "\"", StringComparison.OrdinalIgnoreCase)
+            byte[] flag = approved == null ? null : approved.GetValue("LINE") as byte[];
+            return run != null && String.Equals(run.GetValue("LINE") as string, "\"" + exe + "\"", StringComparison.OrdinalIgnoreCase)
                 && (flag == null || flag.Length == 0 || flag[0] == 2);
         }
     }

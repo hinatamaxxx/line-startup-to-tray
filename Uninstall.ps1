@@ -6,6 +6,13 @@ $runKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
 $backupPath = Join-Path $target 'startup-backup.json'
 if (!(Test-Path $backupPath)) { throw '自動起動設定のバックアップが見つかりません。' }
 $backup = Get-Content -LiteralPath $backupPath -Raw | ConvertFrom-Json
+if ($backup.PSObject.Properties['Run']) {
+    if ($null -ne $backup.Run) {
+        New-ItemProperty -Path $runKey -Name LINE -PropertyType String -Value $backup.Run -Force | Out-Null
+    } else {
+        Remove-ItemProperty -Path $runKey -Name LINE -ErrorAction SilentlyContinue
+    }
+}
 if ($null -ne $backup.HelperRun) {
     New-ItemProperty -Path $runKey -Name LineTrayStartup -PropertyType String -Value $backup.HelperRun -Force | Out-Null
 } else {

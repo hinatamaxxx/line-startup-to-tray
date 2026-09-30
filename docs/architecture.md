@@ -40,13 +40,15 @@ Qtのクラス名やメインウィンドウの識別はLINEの内部実装に�
 ## セットアップで変更する内容
 
 - `%LOCALAPPDATA%\LineTrayStartup` に本ツールのファイルを配置します。
-- `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` に `LineTrayStartup` を登録します。
-- `Explorer\StartupApproved\Run` の通常の `LINE` を無効、補助項目 `LineTrayStartup` を有効にします。LINE本来のRunコマンドは維持します。
+- `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` の `LINE` の起動先を、本ツールの `LineTrayStart.exe` に切り替えます。
+- `Explorer\StartupApproved\Run` の `LINE` を有効にし、旧版の別項目 `LineTrayStartup` を削除して起動経路を1つにします。
 - 変更前の関連する値を `startup-backup.json` に保存します。
 - スタートメニューに設定画面へのショートカットを作ります。
 - 旧版のタスク `LINE startup to tray` が存在する場合は削除します。
 
-設定を元に戻すと、保存していたスタートアップ状態を復元します。復元済みバックアップは別名で保存し、後日再導入した際は、その時点の設定を新しく記録します。
+設定を元に戻すと、保存していたLINEの起動コマンドとスタートアップ状態を復元します。旧版のバックアップも引き継ぎます。復元済みバックアップは別名で保存し、後日再導入した際は、その時点の設定を新しく記録します。
+
+起動用EXEは、LINEランチャーのフォルダーを作業ディレクトリに指定します。Windowsサインイン時の作業ディレクトリに依存させません。また、起動用EXE自身が `helper-start`、`launcher-created` または `launcher-create-failed` をUTC日時付きで記録するため、補助EXEの起動とDLLの読み込みを分けて診断できます。
 
 LINEの認証ファイル、会話データ、認証関連のレジストリは変更しません。PowerShellは導入・復元時だけ非表示で実行し、PC起動時には使用しません。
 
@@ -58,7 +60,7 @@ LINEの認証ファイル、会話データ、認証関連のレジストリは�
 - 利用者がアイコンのダブルクリックによる再表示とログイン維持を確認。
 - セットアップの導入、繰り返し実行、設定の復元、再導入、ショートカットを独立したテスト領域で確認。
 
-**PCを再起動してサインインする一連の確認は未実施です。** そのため初回配布はプレビュー版としています。
+2026年9月30日、旧方式ではPC再起動後のLINEに補助DLLが読み込まれず、画面とアイコンの処理が適用されない問題を確認しました。v0.2.0-preview.4で自動起動の登録方式を変更しています。**修正後のPC再起動による最終確認は、引き続き必要です。**
 
 ## 参考
 

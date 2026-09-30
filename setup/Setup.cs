@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using System.Windows;
 
 [assembly: AssemblyTitle("Windows版LINEを通知領域で起動 Setup")]
-[assembly: AssemblyVersion("0.2.0.3")]
-[assembly: AssemblyFileVersion("0.2.0.3")]
+[assembly: AssemblyVersion("0.2.0.4")]
+[assembly: AssemblyFileVersion("0.2.0.4")]
 
 internal static class Program
 {
-    internal const string Version = "0.2.0-preview.3";
+    internal const string Version = "0.2.0-preview.4";
     internal static readonly string Home = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LineTrayStartup");
     internal static readonly string Shortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), "Windows版LINEを通知領域で起動.lnk");
     internal static readonly string[] Payloads = { "Install.ps1", "Uninstall.ps1", "LineTrayStart.exe", "LineTrayHook32.dll", "LineTrayHook64.dll", "LICENSE.txt", "Detours-LICENSE.txt", "GUIDE.txt" };
