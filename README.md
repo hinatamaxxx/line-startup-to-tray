@@ -6,7 +6,7 @@ Windowsへのサインイン時にLINEを起動し、時計の近くにある通
 
 **[セットアップEXEをダウンロード](https://github.com/hinatamaxxx/windows-line-start-to-tray/releases/download/v0.2.0-preview.5/WindowsLineStartToTray-Setup-0.2.0-preview.5.exe)** · [リリース一覧](https://github.com/hinatamaxxx/windows-line-start-to-tray/releases)
 
-> 現在は **v0.2.0-preview.5（プレビュー版）** です。Windows 11 x64・Microsoft StoreからインストールしたLINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。AIツールなどから導入した際に設定とファイルが隔離領域へ保存される問題を修正し、Windowsが使う実際の保存先と起動設定を確認しました。**修正後のPC再起動を伴う最終確認は未実施**です。すべてのLINEバージョンでの動作を保証するものではありません。
+> 現在は **v0.2.0-preview.5（プレビュー版）** です。Windows 11 x64・Microsoft StoreからインストールしたLINE 26.4.2.3957で、非表示起動、アイコンからの再表示、ログイン維持を確認しています。AIツールなどから導入した際に設定とファイルが隔離領域へ保存される問題を修正し、Windowsが使う実際の保存先と起動設定を確認しました。**2026年9月30日、利用者が実機でPC再起動後もLINEのウィンドウが表示されず、通知領域にLINEのアイコンが表示されることを確認しました。** 今回の再起動後の確認では、アイコンからの再表示とログイン維持は再確認していません。すべてのLINEバージョンでの動作を保証するものではありません。
 
 ![セットアップ画面](docs/images/setup.png)
 
@@ -169,7 +169,8 @@ Windowsの「設定 → アプリ → スタートアップ」では、**LINEを
 
 | 用途 | ツール | 使用モデル |
 | --- | --- | --- |
-| 設計・実装・テスト・ドキュメント作成 | OpenAI Codex | `gpt-6-astra`、`gpt-6-sol`、`gpt-6-luna` |
+| これまでの設計・実装・テスト・ドキュメント作成 | OpenAI Codex | `gpt-6-astra`、`gpt-6-sol`、`gpt-6-luna` |
+| 再起動時の不具合修正 | OpenAI Codex | Astra（`gpt-6-astra`）、GPT-6.1 Sol（`gpt-6.1-sol`、Ultra / Fast） |
 | 利用者向けの説明文の校正 | Antigravity CLI | Gemini 3.8 Flash (High) |
 
 これらは開発時に使用したものです。本ツールを利用するために、AIサービスのアカウントやAPIキーは必要ありません。
