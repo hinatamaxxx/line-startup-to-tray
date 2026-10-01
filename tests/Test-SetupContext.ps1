@@ -1,4 +1,4 @@
-param([string]$Setup = (Join-Path $PSScriptRoot '..\release\WindowsLineStartToTray-Setup-0.2.0-preview.5.exe'))
+﻿param([string]$Setup = (Join-Path $PSScriptRoot '..\release\WindowsLineStartToTray-Setup-0.2.0-preview.6.exe'))
 $ErrorActionPreference = 'Stop'
 $setupPath = (Resolve-Path $Setup).Path
 $resultPath = Join-Path (Split-Path $setupPath) ('context-' + [Guid]::NewGuid().ToString('N') + '.txt')

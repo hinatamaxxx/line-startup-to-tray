@@ -11,12 +11,13 @@ using System.Text.RegularExpressions;
 using Microsoft.Win32.SafeHandles;
 
 [assembly: AssemblyTitle("Windows版LINEを通知領域で起動 Setup")]
-[assembly: AssemblyVersion("0.2.0.5")]
-[assembly: AssemblyFileVersion("0.2.0.5")]
+[assembly: AssemblyVersion("0.2.0.6")]
+[assembly: AssemblyFileVersion("0.2.0.6")]
 
 internal static class Program
 {
-    internal const string Version = "0.2.0-preview.5";
+    internal const string Version = "0.2.0-preview.6";
+    internal const string StartupEntry = "WindowsLineStartToTray";
     internal static readonly string Home = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LineTrayStartup");
     internal static readonly string Shortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), "Windows版LINEを通知領域で起動.lnk");
     internal static readonly string[] Payloads = { "Install.ps1", "Uninstall.ps1", "StartupRegistry.ps1", "LineTrayStart.exe", "LineTrayHook32.dll", "LineTrayHook64.dll", "LICENSE.txt", "Detours-LICENSE.txt", "GUIDE.txt" };

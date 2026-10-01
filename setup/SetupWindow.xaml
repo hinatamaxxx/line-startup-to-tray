@@ -128,7 +128,7 @@
             </StackPanel>
           </StackPanel>
         </Border>
-        <TextBlock Text="非公式ツール · 確認済み LINE 26.4.2.3957 · プレビュー版" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="2,16,0,0" TextWrapping="Wrap"/>
+        <TextBlock Text="非公式ツール · Windows 10 / 11 x64 · プレビュー版" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="2,16,0,0" TextWrapping="Wrap"/>
       </StackPanel>
     </ScrollViewer>
     <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="23,6">

@@ -86,19 +86,25 @@ internal sealed class SetupWindow : Window
         {
             input["hDefKey"] = (uint)0x80000003;
             input["sSubKeyName"] = root + "Run";
-            input["sValueName"] = "LINE";
+            input["sValueName"] = Program.StartupEntry;
             using (var output = registry.InvokeMethod("GetStringValue", input, null))
                 if (Convert.ToUInt32(output["ReturnValue"]) != 0 || !String.Equals(output["sValue"] as string, "\"" + exe + "\"", StringComparison.OrdinalIgnoreCase)) return false;
             using (var approvalInput = registry.GetMethodParameters("GetBinaryValue"))
             {
                 approvalInput["hDefKey"] = (uint)0x80000003;
                 approvalInput["sSubKeyName"] = root + @"Explorer\StartupApproved\Run";
-                approvalInput["sValueName"] = "LINE";
+                approvalInput["sValueName"] = Program.StartupEntry;
                 using (var output = registry.InvokeMethod("GetBinaryValue", approvalInput, null))
                 {
                     uint error = Convert.ToUInt32(output["ReturnValue"]);
                     byte[] flag = output["uValue"] as byte[];
-                    return (error == 1 || error == 2) || (error == 0 && (flag == null || flag.Length == 0 || flag[0] == 2));
+                    if (!(error == 0 && flag != null && flag.Length > 0 && flag[0] == 2)) return false;
+                }
+                approvalInput["sValueName"] = "LINE";
+                using (var output = registry.InvokeMethod("GetBinaryValue", approvalInput, null))
+                {
+                    byte[] flag = output["uValue"] as byte[];
+                    return Convert.ToUInt32(output["ReturnValue"]) == 0 && flag != null && flag.Length > 0 && flag[0] == 3;
                 }
             }
         }

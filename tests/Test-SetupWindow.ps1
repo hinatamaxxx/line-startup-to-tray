@@ -1,4 +1,4 @@
-﻿param([string]$Setup = (Join-Path $PSScriptRoot '..\release\WindowsLineStartToTray-Setup-0.2.0-preview.5.exe'))
+﻿param([string]$Setup = (Join-Path $PSScriptRoot '..\release\WindowsLineStartToTray-Setup-0.2.0-preview.6.exe'))
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
 $assembly = [Reflection.Assembly]::LoadFrom((Resolve-Path $Setup).Path)

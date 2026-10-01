@@ -52,6 +52,13 @@ powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\tests\Test-SetupW
 
 `tests/Fixture.cpp` と `tests/BuildFixture.cmd` に、32bitランチャーから64bitアプリを起動するテスト用アプリがあります。起動画面、初回メイン画面、閉じる処理、その後の再表示を確認するために使用します。
 
+```powershell
+cmd.exe /c tests\BuildFixture.cmd
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tests\Test-Fixture.ps1
+```
+
+通常の起動に加え、LINE → 管理プロセス → 32bit更新プログラム → 更新後の64bit LINEという経路を模擬します。`ShellExecuteExW`、`CreateProcessW`、`CreateProcessA`を経由したDLLの引き継ぎを確認し、終了は名前付きイベントで待ちます。実際のLINE、ユーザーの起動設定、認証データは変更しません。セットアップテストでは、LINE自身のRun値の上書き、preview.4/.5からの移行、独立した起動項目と元の設定の復元を確認します。
+
 実際のLINEの表示を観測する場合は、LINEを通知領域から通常終了した後に、次を実行します。
 
 ```powershell

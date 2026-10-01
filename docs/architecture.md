@@ -28,7 +28,7 @@ Codexの実行環境から起動した子プロセスでは、レジストリと
 
 1. Windowsのユーザー別スタートアップから `LineTrayStart.exe` を起動します。
 2. `DetourCreateProcessWithDllExW` で `LineLauncher.exe --booting` を起動します。補助DLLは、アプリの通常の処理が始まる前に読み込まれます。
-3. ランチャーが `ShellExecuteExW` / `ShellExecuteW` / `CreateProcessW` で `LINE.exe` または `LineLauncher.exe` を呼ぶ場合、子プロセスにもDLLを引き継ぎます。現在の環境では32bitのランチャーから64bitのLINE本体を起動します。Detoursの32/64bit対応機能を利用します。
+3. ランチャー・LINE本体・更新関連プロセスの `ShellExecuteExW` / `ShellExecuteW` / `CreateProcessW` / `CreateProcessA` をフックし、`LINE.exe`、`LineLauncher.exe`、`LineUpdater.exe`、`LineAppMgr.exe` の起動にDLLを引き継ぎます。他の名前の実行ファイルは元のAPIへ渡します。32bitと64bitをまたぐ起動にはDetoursの対応機能を利用します。実際の32bit更新プログラムで使われているANSI版の `CreateProcessA` にも対応します。
 4. LINE本体の `CreateWindowExW`、`ShowWindow`、`ShowWindowAsync`、`SetWindowPos` をフックします。起動中のQtのトップレベルウィンドウについて、作成時の `WS_VISIBLE`、表示呼び出し、`SWP_SHOWWINDOW` を抑制します。
 5. 起動画面は非表示のまま初期化を続けます。タイトルが `LINE` のメインウィンドウでは、最初の表示要求を抑えた後に `WM_CLOSE` を送ります。LINE自身が通常の「閉じる」処理を行い、通知領域へ移ります。
 6. 閉じる処理の完了後、起動時の表示抑制を解除します。通知領域アイコンをユーザーがクリックした場合も解除するため、以後のユーザー操作を受け付けます。
@@ -50,8 +50,9 @@ Qtのクラス名やメインウィンドウの識別はLINEの内部実装に�
 ## セットアップで変更する内容
 
 - `%LOCALAPPDATA%\LineTrayStartup` に本ツールのファイルを配置します。
-- `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` の `LINE` の起動先を、本ツールの `LineTrayStart.exe` に切り替えます。
-- `Explorer\StartupApproved\Run` の `LINE` を有効にし、旧版の別項目 `LineTrayStartup` を削除して起動経路を1つにします。
+- `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` に `WindowsLineStartToTray` を登録し、本ツールの `LineTrayStart.exe` を指定します。
+- `Explorer\StartupApproved\Run` で `WindowsLineStartToTray` を有効（先頭バイト2）、`LINE` を無効（先頭バイト3）にします。LINEが自分のRun値を書き換えても、専用の起動項目は維持されます。
+- preview.4/.5で `LINE` の起動先を補助EXEに変更していた場合は、バックアップの起動先に戻します。旧項目 `LineTrayStartup` は削除します。登録項目は分けますが、有効な起動経路は本ツールの1つです。
 - 変更前の関連する値を `startup-backup.json` に保存します。
 - スタートメニューに設定画面へのショートカットを作ります。
 - 旧版のタスク `LINE startup to tray` が存在する場合は削除します。
@@ -73,6 +74,10 @@ LINEの認証ファイル、会話データ、認証関連のレジストリは�
 2026年9月30日、再起動後のLINEに補助DLLが読み込まれない問題を確認しました。v0.2.0-preview.4で起動項目を変更しても、設定とファイルがCodex専用の隔離領域へ保存され、実際のWindowsには適用されていませんでした。v0.2.0-preview.5で通常プロセスへの起動し直しと実レジストリの操作を追加し、実ファイルと実際の起動項目を確認しています。
 
 **同日、利用者が実機で修正後のPC再起動を行い、LINEのウィンドウが表示されず、通知領域にLINEのアイコンが表示されることを確認しました。** 今回の再起動後の確認では、アイコンのダブルクリックによる再表示とログイン維持は再確認していません。
+
+2026年10月1日の再起動では、補助EXEと旧LINEにDLLが読み込まれた後、自動更新で起動した26.5.0.3975のLINEにはDLLがありませんでした。旧版はLINE本体の子プロセス起動をフックせず、更新プログラムも対象外でした。さらに実際の `LINE` のRun値は通常のランチャーへ戻っていました。preview.6では子プロセス起動のフックをLINE・更新プロセスにも適用し、独立した起動項目へ移行しています。
+
+更新経路のテスト用アプリで、32bitランチャー → 64bit LINE → 64bit管理プロセス → 32bit更新プログラム → 64bit更新後LINEを起動し、ANSI版・Unicode版のプロセス作成を経由しても初回表示の抑制と後からの再表示ができることを確認しました。これは実際のLINE更新を再実行したテストとは区別しています。
 
 ## 参考
 

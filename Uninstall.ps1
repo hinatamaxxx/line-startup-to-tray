@@ -26,6 +26,16 @@ if ($null -ne $backup.HelperApproved) {
 } else {
     Remove-StartupRegistryValue -Key $approved -Name LineTrayStartup
 }
+if ($null -ne $backup.ToolRun) {
+    Set-StartupRegistryValue -Key $runKey -Name WindowsLineStartToTray -Kind String -Value $backup.ToolRun
+} else {
+    Remove-StartupRegistryValue -Key $runKey -Name WindowsLineStartToTray
+}
+if ($null -ne $backup.ToolApproved) {
+    Set-StartupRegistryValue -Key $approved -Name WindowsLineStartToTray -Kind Binary -Value ([Convert]::FromBase64String($backup.ToolApproved))
+} else {
+    Remove-StartupRegistryValue -Key $approved -Name WindowsLineStartToTray
+}
 if ($null -ne $backup.Approved) {
     Set-StartupRegistryValue -Key $approved -Name LINE -Kind Binary -Value ([Convert]::FromBase64String($backup.Approved))
 } else {

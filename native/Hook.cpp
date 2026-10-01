@@ -6,6 +6,7 @@
 #include <detours.h>
 
 static decltype(&CreateProcessW) RealCreateProcessW = CreateProcessW;
+static decltype(&CreateProcessA) RealCreateProcessA = CreateProcessA;
 static decltype(&CreateWindowExW) RealCreateWindowExW = CreateWindowExW;
 static decltype(&ShowWindow) RealShowWindow = ShowWindow;
 static decltype(&ShowWindowAsync) RealShowWindowAsync = ShowWindowAsync;
@@ -170,7 +171,40 @@ static bool IsLineChild(LPCWSTR app, LPCWSTR command) {
     }
     LPCWSTR name = wcsrchr(path, L'\\');
     name = name ? name + 1 : path;
-    return _wcsicmp(name, L"LINE.exe") == 0 || _wcsicmp(name, L"LineLauncher.exe") == 0;
+    return _wcsicmp(name, L"LINE.exe") == 0 || _wcsicmp(name, L"LineLauncher.exe") == 0 ||
+        _wcsicmp(name, L"LineUpdater.exe") == 0 || _wcsicmp(name, L"LineAppMgr.exe") == 0;
+}
+
+static bool IsLineChildA(LPCSTR app, LPCSTR command) {
+    char path[MAX_PATH] = {};
+    if (app) strncpy_s(path, app, _TRUNCATE);
+    else if (command) {
+        LPCSTR begin = command;
+        bool quoted = *begin == '"';
+        if (quoted) ++begin;
+        LPCSTR end = strchr(begin, quoted ? '"' : ' ');
+        size_t length = end ? static_cast<size_t>(end - begin) : strlen(begin);
+        if (length >= MAX_PATH) return false;
+        strncpy_s(path, begin, length);
+    }
+    wchar_t wide[MAX_PATH] = {};
+    return MultiByteToWideChar(CP_ACP, 0, path, -1, wide, MAX_PATH) && IsLineChild(wide, nullptr);
+}
+
+static BOOL WINAPI HookCreateProcessA(LPCSTR app, LPSTR command, LPSECURITY_ATTRIBUTES processAttr,
+    LPSECURITY_ATTRIBUTES threadAttr, BOOL inherit, DWORD flags, LPVOID environment,
+    LPCSTR directory, LPSTARTUPINFOA startupInfo, LPPROCESS_INFORMATION information) {
+    if (!IsLineChildA(app, command)) return RealCreateProcessA(app, command, processAttr, threadAttr,
+        inherit, flags, environment, directory, startupInfo, information);
+    PROCESS_INFORMATION local = {};
+    BOOL result = DetourCreateProcessWithDllExA(app, command, processAttr, threadAttr, inherit,
+        flags, environment, directory, startupInfo, information ? information : &local,
+        dllPath, RealCreateProcessA);
+    DWORD error = GetLastError();
+    Log(result ? "ansi-child-injected" : "ansi-child-injection-failed", nullptr, result ? 0 : error);
+    if (result && !information) { CloseHandle(local.hProcess); CloseHandle(local.hThread); }
+    SetLastError(error);
+    return result;
 }
 
 static BOOL WINAPI HookCreateProcessW(LPCWSTR app, LPWSTR command, LPSECURITY_ATTRIBUTES processAttr,
@@ -243,6 +277,7 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID) {
     GetModuleFileNameW(nullptr, executable, MAX_PATH);
     LPCWSTR name = wcsrchr(executable, L'\\');
     bool isLine = name && _wcsicmp(name + 1, L"LINE.exe") == 0;
+    bool isUpdater = name && _wcsicmp(name + 1, L"LineUpdater.exe") == 0;
     DetourTransactionBegin();
     DetourUpdateThread(GetCurrentThread());
     if (isLine) {
@@ -251,12 +286,14 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID) {
         DetourAttach(&(PVOID&)RealShowWindowAsync, HookShowWindowAsync);
         DetourAttach(&(PVOID&)RealSetWindowPos, HookSetWindowPos);
         DetourAttach(&(PVOID&)RealNotifyIcon, HookNotifyIcon);
-    } else {
-        DetourAttach(&(PVOID&)RealCreateProcessW, HookCreateProcessW);
-        DetourAttach(&(PVOID&)RealShellExecuteExW, HookShellExecuteExW);
-        DetourAttach(&(PVOID&)RealShellExecuteW, HookShellExecuteW);
     }
+    // LINE can replace itself through LineUpdater during startup. Propagate the
+    // hook from LINE and the updater too, so the updated process remains covered.
+    DetourAttach(&(PVOID&)RealCreateProcessW, HookCreateProcessW);
+    DetourAttach(&(PVOID&)RealCreateProcessA, HookCreateProcessA);
+    DetourAttach(&(PVOID&)RealShellExecuteExW, HookShellExecuteExW);
+    DetourAttach(&(PVOID&)RealShellExecuteW, HookShellExecuteW);
     LONG error = DetourTransactionCommit();
-    Log(isLine ? "line-hook-attached" : "launcher-hook-attached", nullptr, error);
+    Log(isLine ? "line-hook-attached" : isUpdater ? "updater-hook-attached" : "launcher-hook-attached", nullptr, error);
     return error == NO_ERROR;
 }

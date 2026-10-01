@@ -2,30 +2,71 @@
 #include <windows.h>
 #include <shellapi.h>
 #include <stdio.h>
-#ifndef TEST_LAUNCHER
+#if !defined(TEST_LAUNCHER) && !defined(TEST_UPDATER) && !defined(TEST_APP_MANAGER)
 static int closes = 0;
 static LRESULT CALLBACK Proc(HWND h, UINT m, WPARAM w, LPARAM l) {
     if (m == WM_CLOSE) { ++closes; ShowWindow(h, SW_HIDE); return 0; }
     return DefWindowProcW(h, m, w, l);
 }
 #endif
-int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
-#ifdef TEST_LAUNCHER
-    (void)instance;
+static int StartChild(const wchar_t* relative, const wchar_t* arguments, int api) {
     wchar_t file[MAX_PATH];
     GetModuleFileNameW(nullptr, file, MAX_PATH);
-    wcscpy_s(wcsrchr(file, L'\\') + 1, 32, L"current\\LINE.exe");
-    SHELLEXECUTEINFOW info = {sizeof(info)};
-    info.fMask = SEE_MASK_NOCLOSEPROCESS;
-    info.lpFile = file;
-    info.lpParameters = L"run --booting";
-    info.nShow = SW_SHOWNORMAL;
-    if (!ShellExecuteExW(&info)) return 20;
-    WaitForSingleObject(info.hProcess, 15000);
-    DWORD code = 21; GetExitCodeProcess(info.hProcess, &code);
-    CloseHandle(info.hProcess);
+    wcscpy_s(wcsrchr(file, L'\\') + 1, MAX_PATH - (wcsrchr(file, L'\\') + 1 - file), relative);
+    HANDLE process = nullptr;
+    if (api == 0) {
+        SHELLEXECUTEINFOW info = {sizeof(info)};
+        info.fMask = SEE_MASK_NOCLOSEPROCESS;
+        info.lpFile = file; info.lpParameters = arguments; info.nShow = SW_SHOWNORMAL;
+        if (!ShellExecuteExW(&info)) return 20;
+        process = info.hProcess;
+    } else {
+        wchar_t command[MAX_PATH + 128];
+        swprintf_s(command, L"\"%s\" %s", file, arguments);
+        PROCESS_INFORMATION information = {};
+        BOOL created;
+        if (api == 1) {
+            STARTUPINFOW startup = {sizeof(startup)};
+            created = CreateProcessW(nullptr, command, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &information);
+        } else {
+            char ansi[(MAX_PATH + 128) * 4];
+            if (!WideCharToMultiByte(CP_ACP, 0, command, -1, ansi, sizeof(ansi), nullptr, nullptr)) return 23;
+            STARTUPINFOA startup = {sizeof(startup)};
+            created = CreateProcessA(nullptr, ansi, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &information);
+        }
+        if (!created) return 24;
+        CloseHandle(information.hThread);
+        process = information.hProcess;
+    }
+    if (WaitForSingleObject(process, 15000) != WAIT_OBJECT_0) { CloseHandle(process); return 25; }
+    DWORD code = 21; GetExitCodeProcess(process, &code); CloseHandle(process);
     return static_cast<int>(code);
+}
+
+int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR arguments, int) {
+#ifdef TEST_LAUNCHER
+    (void)instance;
+    (void)arguments;
+    wchar_t update[2], eventName[128], file[MAX_PATH];
+    bool chain = GetEnvironmentVariableW(L"LINE_TRAY_FIXTURE_UPDATE", update, 2) != 0;
+    int code = StartChild(L"current\\LINE.exe", chain ? L"--fixture-update" : L"run --booting", 0);
+    GetEnvironmentVariableW(L"LOCALAPPDATA", file, MAX_PATH);
+    wcscat_s(file, L"\\fixture-chain-result.txt");
+    FILE* result = nullptr; _wfopen_s(&result, file, L"w");
+    if (result) { fprintf(result, "exit=%d\n", code); fclose(result); }
+    if (GetEnvironmentVariableW(L"LINE_TRAY_FIXTURE_DONE", eventName, 128)) {
+        HANDLE done = OpenEventW(EVENT_MODIFY_STATE, FALSE, eventName);
+        if (done) { SetEvent(done); CloseHandle(done); }
+    }
+    return code;
+#elif defined(TEST_APP_MANAGER)
+    (void)instance; (void)arguments;
+    return StartChild(L"LineUpdater.exe", L"--fixture-relay", 1);
+#elif defined(TEST_UPDATER)
+    (void)instance; (void)arguments;
+    return StartChild(L"LINE.exe", L"run --updated fixture silent", 2);
 #else
+    if (wcsstr(arguments, L"--fixture-update")) return StartChild(L"LineAppMgr.exe", L"--fixture-relay", 0);
     WNDCLASSW cls = {};
     cls.hInstance = instance; cls.lpfnWndProc = Proc; cls.lpszClassName = L"Qt663QWindowIcon";
     RegisterClassW(&cls);
